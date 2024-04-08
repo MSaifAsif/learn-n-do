@@ -1,5 +1,6 @@
-package com.example.demo;
+package com.example.demo.cashcard;
 
+import com.example.demo.cashcard.CashCard;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
