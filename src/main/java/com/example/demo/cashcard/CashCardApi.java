@@ -2,11 +2,10 @@ package com.example.demo.cashcard;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.Optional;
 
 @RestController
@@ -15,6 +14,16 @@ class CashCardApi {
 
     @Autowired
     private CashCardRepository cashCardRepository;
+
+    @PostMapping
+    private ResponseEntity<CashCard> createCashCard(@RequestBody CashCard newCashCardRequest, UriComponentsBuilder ucb) {
+        CashCard savedCashCard = cashCardRepository.save(newCashCardRequest);
+        URI locationOfNewCashCard = ucb
+                .path("cashcards/{id}")
+                .buildAndExpand(savedCashCard.id())
+                .toUri();
+        return ResponseEntity.created(locationOfNewCashCard).build();
+    }
 
     @GetMapping("/{requestedId}")
     private ResponseEntity<CashCard> getById(@PathVariable final Long requestedId) {
