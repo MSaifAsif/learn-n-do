@@ -26,14 +26,14 @@ public class CashCardJsonTest {
     @BeforeEach
     void setUp() {
         cashCards = Arrays.array(
-                new CashCard(99L, 123.45),
-                new CashCard(100L, 1.00),
-                new CashCard(101L, 150.00));
+                new CashCard(99L, 123.45, "sarah1"),
+                new CashCard(100L, 1.00, "sarah1"),
+                new CashCard(101L, 150.00, "sarah1"));
     }
 
     @Test
     public void cashSerializationTest() throws IOException {
-        CashCard cashCard = new CashCard(99L, 123.45);
+        CashCard cashCard = new CashCard(99L, 123.45, "sarah1");
         assertThat(jacksonTester.write(cashCard)).isStrictlyEqualToJson("expected.json");
         assertThat(jacksonTester.write(cashCard)).hasJsonPathNumberValue("@.id");
         assertThat(jacksonTester.write(cashCard)).extractingJsonPathNumberValue("@.id")
@@ -49,11 +49,12 @@ public class CashCardJsonTest {
         String expected = """
            {
                "id":99,
-               "amount":123.45
+               "amount":123.45,
+               "owner": "sarah1"
            }
            """;
         assertThat(jacksonTester.parse(expected))
-                .isEqualTo(new CashCard(99L, 123.45));
+                .isEqualTo(new CashCard(99L, 123.45, "sarah1"));
         assertThat(jacksonTester.parseObject(expected).id()).isEqualTo(99);
         assertThat(jacksonTester.parseObject(expected).amount()).isEqualTo(123.45);
     }
@@ -61,9 +62,9 @@ public class CashCardJsonTest {
     @Test
     void cashCardListSerializationTest() throws IOException {
         cashCards = Arrays.array(
-                new CashCard(99L, 123.45),
-                new CashCard(100L, 1.00),
-                new CashCard(101L, 150.00));
+                new CashCard(99L, 123.45, "sarah1"),
+                new CashCard(100L, 1.00, "sarah1"),
+                new CashCard(101L, 150.00, "sarah1"));
         assertThat(jsonList.write(cashCards)).isStrictlyEqualToJson("list.json");
     }
 
@@ -72,9 +73,9 @@ public class CashCardJsonTest {
     void cashCardListDeserializationTest() throws IOException {
         String expected="""
          [
-            { "id": 99, "amount": 123.45 },
-            { "id": 100, "amount": 1.00 },
-            { "id": 101, "amount": 150.00 }
+            { "id": 99, "amount": 123.45, "owner": "sarah1" },
+            { "id": 100, "amount": 1.00 , "owner": "sarah1"},
+            { "id": 101, "amount": 150.00 , "owner": "sarah1"}
          ]
          """;
         assertThat(jsonList.parse(expected)).isEqualTo(cashCards);
