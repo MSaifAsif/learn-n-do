@@ -1,6 +1,5 @@
 package com.example.demo.cashcard;
 
-import com.example.demo.cashcard.CashCard;
 import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,12 +46,12 @@ public class CashCardJsonTest {
     @Test
     void cashCardDeserializationTest() throws IOException {
         String expected = """
-           {
-               "id":99,
-               "amount":123.45,
-               "owner": "sarah1"
-           }
-           """;
+                {
+                    "id":99,
+                    "amount":123.45,
+                    "owner": "sarah1"
+                }
+                """;
         assertThat(jacksonTester.parse(expected))
                 .isEqualTo(new CashCard(99L, 123.45, "sarah1"));
         assertThat(jacksonTester.parseObject(expected).id()).isEqualTo(99);
@@ -71,13 +70,13 @@ public class CashCardJsonTest {
 
     @Test
     void cashCardListDeserializationTest() throws IOException {
-        String expected="""
-         [
-            { "id": 99, "amount": 123.45, "owner": "sarah1" },
-            { "id": 100, "amount": 1.00 , "owner": "sarah1"},
-            { "id": 101, "amount": 150.00 , "owner": "sarah1"}
-         ]
-         """;
+        String expected = """
+                [
+                   { "id": 99, "amount": 123.45, "owner": "sarah1" },
+                   { "id": 100, "amount": 1.00 , "owner": "sarah1"},
+                   { "id": 101, "amount": 150.00 , "owner": "sarah1"}
+                ]
+                """;
         assertThat(jsonList.parse(expected)).isEqualTo(cashCards);
     }
 

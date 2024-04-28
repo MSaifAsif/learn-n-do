@@ -12,8 +12,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
-import static net.sf.jsqlparser.util.validation.metadata.NamedObject.role;
-
 @Configuration
 public class SecurityConfig {
 
