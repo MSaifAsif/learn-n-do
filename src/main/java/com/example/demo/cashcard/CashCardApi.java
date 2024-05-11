@@ -18,12 +18,11 @@ import java.util.Optional;
 class CashCardApi {
 
     @Autowired
-    private CashCardRepository cashCardRepository;
+    private CashCardService cashCardService;
 
     @PostMapping
     private ResponseEntity<CashCard> createCashCard(@RequestBody CashCard newCashCardRequest, UriComponentsBuilder ucb, Principal principal) {
-        CashCard cashCardWithOwner = new CashCard(null, newCashCardRequest.amount(), principal.getName());
-        CashCard savedCashCard = cashCardRepository.save(cashCardWithOwner);
+        CashCard savedCashCard = cashCardService.createCashCard(newCashCardRequest, principal.getName());
         URI locationOfNewCashCard = ucb
                 .path("cashcards/{id}")
                 .buildAndExpand(savedCashCard.id())
@@ -33,7 +32,7 @@ class CashCardApi {
 
     @GetMapping("/{requestedId}")
     private ResponseEntity<CashCard> getById(@PathVariable final Long requestedId, Principal principal) {
-        Optional<CashCard> optionalCashCard = Optional.ofNullable(getCardRepositoryByIdAndOwner(requestedId, principal));
+        Optional<CashCard> optionalCashCard = cashCardService.getById(requestedId, principal.getName());
         if (optionalCashCard.isPresent()) {
             return ResponseEntity.ok(optionalCashCard.get());
         } else {
@@ -43,21 +42,16 @@ class CashCardApi {
 
     @GetMapping()
     private ResponseEntity<Iterable<CashCard>> findAll(Pageable pageable, Principal principal) {
-        Page<CashCard> response = cashCardRepository.findByOwner(principal.getName(),
-                PageRequest.of(
-                        pageable.getPageNumber(), pageable.getPageSize(),
-                        pageable.getSortOr(Sort.by(Sort.Direction.ASC, "amount"))
-                )
-        );
+        Page<CashCard> response = cashCardService.findAll(principal.getName(), pageable);
         return ResponseEntity.ok(response.getContent());
     }
 
     @PutMapping("/{requestedId}")
     private ResponseEntity<Void> putCashCard(@PathVariable Long requestedId, @RequestBody CashCard cashCardUpdate, Principal principal) {
-        Optional<CashCard> optionalCashCard = Optional.ofNullable(getCardRepositoryByIdAndOwner(requestedId, principal));
+        Optional<CashCard> optionalCashCard = Optional.ofNullable(cashCardService.getCardRepositoryByIdAndOwner(requestedId, principal.getName()));
         if (optionalCashCard.isPresent()) {
             CashCard updatedCashCard = new CashCard(optionalCashCard.get().id(), cashCardUpdate.amount(), principal.getName());
-            cashCardRepository.save(updatedCashCard);
+            cashCardService.save(updatedCashCard);
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
@@ -65,15 +59,12 @@ class CashCardApi {
 
     @DeleteMapping("/{id}")
     private ResponseEntity<Void> deleteCashCard(@PathVariable Long id, Principal principal) {
-        if (cashCardRepository.existsByIdAndOwner(id, principal.getName())) {
-            cashCardRepository.deleteById(id);
+        if (cashCardService.existsByIdAndOwner(id, principal.getName())) {
+            cashCardService.remove(id);
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
     }
 
 
-    private CashCard getCardRepositoryByIdAndOwner(Long requestedId, Principal principal) {
-        return cashCardRepository.findByIdAndOwner(requestedId, principal.getName());
-    }
 }
