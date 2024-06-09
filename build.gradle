@@ -17,7 +17,6 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
 	// Add the two dependencies below
 	implementation 'org.springframework.data:spring-data-jdbc'
@@ -25,6 +24,12 @@ dependencies {
 
 	// Add the following dependency
 	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	implementation 'org.springframework.boot:spring-boot-starter-graphql'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework:spring-webflux'
+	testImplementation 'org.springframework.graphql:spring-graphql-test'
+
 }
 
 tasks.named('test') {
